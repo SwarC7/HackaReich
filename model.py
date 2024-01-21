@@ -120,14 +120,18 @@ while True:
             
         accuracy_scores.append(accuracy_score(yvalid, preds_valid))
 
-    connection = sqlite3.connect("washing_database.db")
+    connection = sqlite3.connect("user_database.db")
     cursor = connection.cursor()
 
     # Define the table names
-    table_name = "WashingData"
+    table_name = "Queue"
     table_name_1 = "WashingData1"
+    column_name = "Email"
 
     # Fetch data from the existing table
+    select_query = f"SELECT {column_name} FROM {table_name}"
+    df_email=pd.read_sql_query(select_query, connection)
+
     fetch_data_query = f"SELECT {', '.join(useful_features)} FROM {table_name}"
     df_from_db = pd.read_sql_query(fetch_data_query, connection)
 
@@ -151,16 +155,21 @@ while True:
     value_mapping = {0: 30, 1: 45, 2: 60, 3: 75, 4: 90}
     datab_pred = [value_mapping[val] for val in datab_pred]
 
+    cumulative_sum_list = np.cumsum([0] + datab_pred)
+
+    # print(df_email['Email'][2])
+
     # Create a new table if not exists
     create_table_query = f"""
     CREATE TABLE IF NOT EXISTS {table_name_1} 
     (
-        Id INT,
+        Email TEXT,
+        Time INT,
+        Jackets INT,
         Shirts INT,
         Pants INT,
         Undergarments INT,
-        Jackets INT,
-        WashingTime FLOAT
+        WaitingTime INT
     )
     """
 
@@ -168,14 +177,18 @@ while True:
 
     # Insert data into the new table
     for i in range(len(df_db_copy)):
-        cursor.execute(f"INSERT INTO {table_name_1} (Id, Shirts, Pants, Undergarments, Jackets, WashingTime) VALUES ({i}, {df_db_copy['Shirts'][i]}, {df_db_copy['Pants'][i]}, {df_db_copy['Undergarments'][i]}, {df_db_copy['Jackets'][i]}, {datab_pred[i]})")
+
+        email_value = f"'{df_email['Email'][i]}'"
+
+        cursor.execute(f"INSERT INTO {table_name_1} (Email,Time, Jackets, Shirts,Pants ,Undergarments,  WaitingTime) VALUES ({email_value},{datab_pred[i]} ,{df_db_copy['Jackets'][i]}, {df_db_copy['Shirts'][i]}, {df_db_copy['Pants'][i]}, {df_db_copy['Undergarments'][i]},{cumulative_sum_list[i]})")
+        
 
     # Commit changes and close the connection
     connection.commit()
     connection.close()
 
     # Reconnect to fetch and print the data from the new table
-    connection = sqlite3.connect("washing_database.db")
+    connection = sqlite3.connect("user_database.db")
     cursor = connection.cursor()
 
     # Fetch and print data from the new table
