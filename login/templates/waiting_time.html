@@ -1,0 +1,23 @@
+<!-- Store this code in 'waiting_time.html' file inside the 'templates' folder -->
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title> Waiting Time </title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">		 
+	</head>
+	<body>
+		<div align="center">
+			<div align="center" class="border">
+				<div class="header">
+					<h1 class="word">Estimated Waiting Time</h1>
+				</div>
+				<div class="content">
+					<p class="waiting-msg">Your estimated waiting time is:</p>
+					<h2 class="waiting-time">10 minutes</h2>
+				</div>
+				<p class="bottom">Thank you for your patience!</p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,37 @@
+<!-- Store this code in 'order.html' file inside the 'templates' folder -->
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title> Order Form </title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">		 
+	</head>
+	<body></br></br></br></br></br>
+		<div align="center">
+		<div align="center" class="border">
+			<div class="header">
+				<h1 class="word">Order Form</h1>
+			</div></br></br></br>
+			<h2 class="word">
+				<form action="{{ url_for('order') }}" method="post">
+				<div class="msg">{{ msg }}</div>
+					
+					<label for="jackets">Number of Jackets:</label>
+					<input id="jackets" name="jackets" type="number" placeholder="Enter quantity" class="textbox"/></br></br>
+
+					<label for="undergarments">Number of Undergarments:</label>
+					<input id="undergarments" name="undergarments" type="number" placeholder="Enter quantity" class="textbox"/></br></br>
+
+					<label for="shirts">Number of Shirts:</label>
+					<input id="shirts" name="shirts" type="number" placeholder="Enter quantity" class="textbox"/></br></br>
+
+					<label for="trousers">Number of Trousers:</label>
+					<input id="trousers" name="trousers" type="number" placeholder="Enter quantity" class="textbox"/></br></br></br>
+
+					<input type="submit" class="btn" value="Place Order"></br></br>
+				</form>
+			</h2>
+		
+		</div>
+	</body>
+</html>
