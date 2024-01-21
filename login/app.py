@@ -181,8 +181,8 @@ def order():
             # Create a new order and add it to the database
             con = connect_db()
             cur = con.cursor()
-            cur.execute('INSERT INTO queue (Email, Time,Jackets, Undergarments, Shirts, Trousers) VALUES (?, ?,?, ?, ?, ?)',
-                        (session['username'],10, jackets, undergarments, shirts, trousers))
+            cur.execute('INSERT INTO queue (Email, Time,Jackets, Undergarments, Shirts, Trousers,WaitingTime) VALUES (?, ?,?, ?, ?, ?,?)',
+                        (session['username'],10, jackets, undergarments, shirts, trousers,20))
             con.commit()
             cur.execute('SELECT Email FROM queue ASC LIMIT 2')
             queue_result = cur.fetchall()
@@ -198,6 +198,11 @@ def order():
             # Send emails to the first and second person
             send_email(email_first_in_queue, "Collect your clothes", estimated_waiting_time)
             send_email(email_second_in_queue, "Your turn at the washing machine", estimated_waiting_time)
+            con = connect_db()
+            cur = con.cursor()
+            cur.execute('DELETE FROM queue WHERE Email = ?', (email_first_in_queue,))
+            con.commit()
+            con.close()
             print("done")
 
         return render_template('waiting_time.html', estimated_waiting_time=estimated_waiting_time)
